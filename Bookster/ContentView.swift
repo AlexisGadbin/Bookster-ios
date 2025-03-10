@@ -8,9 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(SessionManager.self) var session
+    
     var body: some View {
-        ZStack {
-            Color.booksterBlack.ignoresSafeArea()
+        
+        if !session.isLoggedIn {
+            AuthView()
+        } else {
+            TabView {
+                Tab("Accueil", systemImage: "book.closed") {
+                    HomeView()
+                }
+    //            .badge(2)
+                
+                Tab("Réglages", systemImage: "gearshape") {
+                    SettingsView()
+                }
+            }
         }
     }
 }
