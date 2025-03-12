@@ -20,6 +20,15 @@ struct HomeView: View {
     }
 }
 
-#Preview {
+#Preview("Logged In") {
+    let sessionManagar = SessionManager(token: "mockToken", user: User(id: 1, firstName: "Alexis", lastName: "Gadbin", email: "alexis@gadbin.com", avatarUrl: nil))
+    
     HomeView()
+        .environment(sessionManagar)
 }
+
+#Preview("Logged Out") {
+    HomeView()
+        .environment(SessionManager.shared)
+}
+    

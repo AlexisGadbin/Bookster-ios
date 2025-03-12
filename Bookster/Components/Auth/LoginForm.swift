@@ -11,7 +11,6 @@ struct LoginForm: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var errorMessage: String?
-    @State private var isLoading = false
 
     @Environment(SessionManager.self) var session
 
@@ -46,7 +45,7 @@ struct LoginForm: View {
                         await login()
                     }
                 }) {
-                    if isLoading {
+                    if session.isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
                             .frame(maxWidth: .infinity)
@@ -55,16 +54,16 @@ struct LoginForm: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                .disabled(isLoading)
+                .disabled(session.isLoading)
                 .padding()
                 .background(
-                    isLoading
+                    session.isLoading
                         ? Color.booksterGreen.opacity(0.75)
                         : Color.booksterGreen
                 )
                 .foregroundStyle(.booksterBlack)
                 .cornerRadius(8)
-                .animation(.easeInOut, value: isLoading)
+                .animation(.easeInOut, value: session.isLoading)
 
                 Text("Pas encore de compte ?")
                     .font(.callout)
@@ -84,11 +83,6 @@ struct LoginForm: View {
         }
 
         errorMessage = nil
-        isLoading = true
-
-        defer {
-            isLoading = false
-        }
 
         await session.login(email: email, password: password)
 
