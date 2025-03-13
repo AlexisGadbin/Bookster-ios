@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5A655B512D8386F3008E1D6B /* DebouncedOnChange in Frameworks */ = {isa = PBXBuildFile; productRef = 5A655B502D8386F3008E1D6B /* DebouncedOnChange */; };
+		5AC1B87B2D820C1A000BBEDD /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC1B87A2D820C1A000BBEDD /* SDWebImageSwiftUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		5AAE12B82D78CA6800E6FBBF /* Bookster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bookster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5AC1B87B2D820C1A000BBEDD /* SDWebImageSwiftUI in Frameworks */,
+				5A655B512D8386F3008E1D6B /* DebouncedOnChange in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = Bookster;
 			packageProductDependencies = (
+				5AC1B87A2D820C1A000BBEDD /* SDWebImageSwiftUI */,
+				5A655B502D8386F3008E1D6B /* DebouncedOnChange */,
 			);
 			productName = Bookster;
 			productReference = 5AAE12B82D78CA6800E6FBBF /* Bookster.app */;
@@ -94,6 +103,10 @@
 			);
 			mainGroup = 5AAE12AF2D78CA6800E6FBBF;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5AC1B8792D820C1A000BBEDD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				5A655B4F2D8386F3008E1D6B /* XCRemoteSwiftPackageReference "DebouncedOnChange" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5AAE12B92D78CA6800E6FBBF /* Products */;
 			projectDirPath = "";
@@ -324,6 +337,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5A655B4F2D8386F3008E1D6B /* XCRemoteSwiftPackageReference "DebouncedOnChange" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Tunous/DebouncedOnChange.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		5AC1B8792D820C1A000BBEDD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5A655B502D8386F3008E1D6B /* DebouncedOnChange */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5A655B4F2D8386F3008E1D6B /* XCRemoteSwiftPackageReference "DebouncedOnChange" */;
+			productName = DebouncedOnChange;
+		};
+		5AC1B87A2D820C1A000BBEDD /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AC1B8792D820C1A000BBEDD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5AAE12B02D78CA6800E6FBBF /* Project object */;
 }
