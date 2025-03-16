@@ -11,44 +11,49 @@ struct Book: Codable, Identifiable {
     let id: Int
     let title: String
     let description: String?
-
-    let author: Author
-    let contributor: User
-
+    let authorId: Int
+    let contributorId: Int
+    
+    let author: Author?
+    let contributor: User?
+    
     let coverImageUrl: String?
     let backCoverImageUrl: String?
-
-    let isWishlisted: Bool
+    
     let note: Double?
-    let isRead: Bool
-    let isNextRead: Bool
-    let isInLibrary: Bool
-
+    
+    let shelves: [Shelf]?
+    
     static var mock: Book {
         Book(
-            id: 1, title: "Harry Potter and the Philosopher's Stone",
+            id: 1,
+            title: "Harry Potter and the Philosopher's Stone",
             description: "The first book in the Harry Potter series",
-            author: Author.mock, contributor: User.mock,
+            authorId: 1,
+            contributorId: 1,
+            author: Author.mock,
+            contributor: User.mock,
             coverImageUrl: Constants.randomImage,
-            backCoverImageUrl: Constants.randomImage, isWishlisted: false,
-            note: nil, isRead: false, isNextRead: false, isInLibrary: false)
+            backCoverImageUrl: Constants.randomImage,
+            note: nil,
+            shelves: Shelf.mocks(count: 4)
+        )
     }
-
+    
     static func mocks(count: Int) -> [Book] {
         return (0..<count).map { index in
             Book(
                 id: index,
                 title: "Book \(index)",
                 description: "Description \(index)",
+                authorId: 1,
+                contributorId: 1,
                 author: Author.mock,
                 contributor: User.mock,
                 coverImageUrl: Constants.randomImage,
                 backCoverImageUrl: Constants.randomImage,
-                isWishlisted: false,
                 note: 10,
-                isRead: false,
-                isNextRead: false,
-                isInLibrary: false
+                shelves: Shelf.mocks(count: 4)
             )
         }
     }

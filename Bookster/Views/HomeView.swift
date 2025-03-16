@@ -26,22 +26,13 @@ struct HomeView: View {
                 colorScheme == .dark
                     ? Color.booksterBlack.ignoresSafeArea()
                     : Color.booksterWhite.ignoresSafeArea()
+
                 
                 ScrollView(.vertical) {
                     VStack(spacing: 12) {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
                             ForEach(books) { book in
-                                NavigationLink {
-    //                                BookDetailsView(book: book)
-                                } label: {
-                                    ImageTitleCell(
-                                        imageWidth: 100,
-                                        imageHeight: 160,
-                                        imageName: book.coverImageUrl
-                                            ?? Constants.randomImage,
-                                        title: book.title
-                                    )
-                                }
+                                bookCell(book: book)
                             }
                         }
                     }
@@ -63,9 +54,8 @@ struct HomeView: View {
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
-
-                    Button {
-                        //TODO: ajouter un livre
+                    NavigationLink {
+                        AddBookView()
                     } label: {
                         Image(systemName: "plus")
                             .foregroundColor(.booksterGreen)
@@ -94,11 +84,30 @@ struct HomeView: View {
 
     private func fetchBooks(search: String = "") async {
         do {
-            print("🔍 Recherche de livres")
             let fetchedBooks = try await BookService.shared.searchBooks(search: search)
             books = fetchedBooks.data
         } catch {
             print("❌ Erreur BookService : \(error.localizedDescription)")
+        }
+    }
+    
+    private func bookCell(book: Book) -> some View {
+        NavigationLink {
+            BookDetailView(book: book, onDelete: {
+                Task {
+                    isSearchActive = false
+                    searchText = ""
+                    await fetchBooks()
+                }
+            })
+        } label: {
+            ImageTitleCell(
+                imageWidth: 100,
+                imageHeight: 160,
+                imageName: book.coverImageUrl
+                ?? Constants.randomImage,
+                title: book.title
+            )
         }
     }
 }
@@ -107,10 +116,16 @@ struct HomeView: View {
     let mockSession = SessionManager(
         token: "token",
         user: User(
-            id: 1, firstName: "Alexis", lastName: "Gadbin",
-            email: "alexis@gadbin.com", avatarUrl: nil))
-    
-    // Use the mock 
+            id: 1,
+            firstName: "Alexis",
+            lastName: "Gadbin",
+            email: "alexis@gadbin.com",
+            avatarUrl: nil,
+            shelves: Shelf.mocks(
+                count: 4
+            )
+        )
+    )
 
     HomeView(books: Book.mocks(count: 10))
     .environment(mockSession)

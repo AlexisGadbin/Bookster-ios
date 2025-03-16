@@ -20,7 +20,11 @@ final class BookService {
     
     func searchBooks(search: String) async throws -> PaginatedResponse<Book> {
         
-        return try await NetworkManager.shared.request(endpoint: "/books?search=\(search)")
+        return try await NetworkManager.shared.request(endpoint: "/books?search=\(search)&limit=100")
+    }
+    
+    func deleteBook(id: Int) async throws {
+        try await NetworkManager.shared.requestVoid(endpoint: "/books/\(id)", method: "DELETE")
     }
 
 }

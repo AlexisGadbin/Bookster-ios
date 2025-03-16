@@ -13,8 +13,9 @@ struct User: Codable {
     let lastName: String
     let email: String
     let avatarUrl: String?
+    let shelves: [Shelf]?
     
     static var mock: User {
-        User(id: 1, firstName: "Alexis", lastName: "Gadbin", email: "alexis@gadbin.com", avatarUrl: nil)
+        User(id: 1, firstName: "Alexis", lastName: "Gadbin", email: "alexis@gadbin.com", avatarUrl: nil, shelves: Shelf.mocks(count: 4))
     }
 }
