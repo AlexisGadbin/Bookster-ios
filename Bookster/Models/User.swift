@@ -16,6 +16,6 @@ struct User: Codable {
     let shelves: [Shelf]?
     
     static var mock: User {
-        User(id: 1, firstName: "Alexis", lastName: "Gadbin", email: "alexis@gadbin.com", avatarUrl: nil, shelves: Shelf.mocks(count: 4))
+        User(id: 1, firstName: "Alexis", lastName: "Gadbin", email: "alexis@gadbin.com", avatarUrl: Constants.randomImage, shelves: Shelf.mocks(count: 4))
     }
 }

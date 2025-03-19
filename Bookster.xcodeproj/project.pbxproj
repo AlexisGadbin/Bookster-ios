@@ -95,11 +95,12 @@
 				};
 			};
 			buildConfigurationList = 5AAE12B32D78CA6800E6FBBF /* Build configuration list for PBXProject "Bookster" */;
-			developmentRegion = en;
+			developmentRegion = fr;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 5AAE12AF2D78CA6800E6FBBF;
 			minimizedProjectReferenceProxies = 1;

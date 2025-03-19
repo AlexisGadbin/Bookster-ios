@@ -117,7 +117,8 @@ final class NetworkManager {
         endpoint: String,
         parameters: [String: Any],
         images: [String: UIImage?],
-        requiresAuth: Bool = true
+        requiresAuth: Bool = true,
+        httpMethod: String = "POST"
     ) async throws -> T {
 
         guard let url = URL(string: Constants.apiBaseURL + endpoint) else {
@@ -125,7 +126,7 @@ final class NetworkManager {
         }
 
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = httpMethod
 
         let boundary = "Boundary-\(UUID().uuidString)"
 
@@ -149,7 +150,7 @@ final class NetworkManager {
 
         print("Status code : \(httpResponse.statusCode)")
 
-        guard httpResponse.statusCode == 201 else {
+        guard (200..<300).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)
         }
         
