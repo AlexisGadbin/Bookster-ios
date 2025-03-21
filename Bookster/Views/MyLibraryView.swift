@@ -28,7 +28,7 @@ struct MyLibraryView: View {
                     VStack(spacing: 12) {
                         ForEach(shelves) { shelf in
                             NavigationLink {
-                                Text("Détail de l'étagère")
+                                ShelfDetailView(shelf: shelf)
                             } label: {
                                 ShelfCell(shelf: shelf)
                             }
