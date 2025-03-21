@@ -9,21 +9,31 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(SessionManager.self) var session
+    @AppStorage("activeTab") var activeTab = 0
     
     var body: some View {
         
         if !session.isLoggedIn {
             AuthView()
         } else {
-            TabView {
-                Tab("Accueil", systemImage: "book.closed") {
-                    HomeView()
-                }
-    //            .badge(2)
+            TabView(selection: $activeTab) {
+                HomeView()
+                    .tabItem {
+                        Label("Accueil", systemImage: "book.closed")
+                    }
+                    .tag(0)
                 
-                Tab("Réglages", systemImage: "gearshape") {
-                    SettingsView()
-                }
+                MyLibraryView()
+                    .tabItem {
+                        Label("Ma bibliothèque", systemImage: "books.vertical.fill")
+                    }
+                    .tag(1)
+                
+                SettingsView()
+                    .tabItem {
+                        Label("Réglages", systemImage: "gearshape")
+                    }
+                    .tag(2)
             }
         }
     }

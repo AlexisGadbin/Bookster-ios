@@ -84,7 +84,7 @@ struct HomeView: View {
 
     private func fetchBooks(search: String = "") async {
         do {
-            let fetchedBooks = try await BookService.shared.searchBooks(search: search)
+            let fetchedBooks = try await UserService.shared.getMyBooks(search: search)
             books = fetchedBooks.data
         } catch {
             print("❌ Erreur BookService : \(error.localizedDescription)")

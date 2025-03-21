@@ -34,4 +34,10 @@ struct UserService {
         
         return response
     }
+    
+    func getMyBooks(search: String) async throws -> PaginatedResponse<Book> {
+        let response: PaginatedResponse<Book> = try await NetworkManager.shared.request(endpoint: "/me/books?search=\(search)&limit=100");
+        
+        return response
+    }
 }
