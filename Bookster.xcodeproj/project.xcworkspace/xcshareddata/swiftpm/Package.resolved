@@ -1,5 +1,5 @@
 {
-  "originHash" : "28a3bdf4b2f989f83fb81269686b239f1584a5d91972e83073afff6f24606ccf",
+  "originHash" : "db14b36157303fbab0c85385a561fc16f4436aab08453bef2242b950f1a8b942",
   "pins" : [
     {
       "identity" : "debouncedonchange",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "29a60e088293845364294ebc270831997e2a5873",
         "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "emojipicker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kelvas09/EmojiPicker.git",
+      "state" : {
+        "revision" : "d787591e2121b617209172ad6a8ebf2975f605ae",
+        "version" : "1.0.1"
       }
     },
     {
@@ -26,6 +35,15 @@
       "state" : {
         "revision" : "451c6dfd5ecec2cf626d1d9ca81c2d4a60355172",
         "version" : "3.1.3"
+      }
+    },
+    {
+      "identity" : "smile",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onmyway133/Smile",
+      "state" : {
+        "revision" : "40604722a7a56f735124e069fcbb58307637744b",
+        "version" : "2.1.0"
       }
     }
   ],
