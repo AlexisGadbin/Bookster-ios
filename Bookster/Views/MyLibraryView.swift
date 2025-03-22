@@ -10,45 +10,66 @@ import SwiftUI
 struct MyLibraryView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(SessionManager.self) var session
-    
+
     @State private var shelves: [Shelf]
-    
-    init( shelves: [Shelf] = []) {
+
+    @State private var isCreatingShelf = false
+
+    init(shelves: [Shelf] = []) {
         self.shelves = shelves
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 colorScheme == .dark
-                ? Color.booksterBlack.ignoresSafeArea()
-                : Color.white.ignoresSafeArea()
-                
+                    ? Color.booksterBlack.ignoresSafeArea()
+                    : Color.white.ignoresSafeArea()
+
                 ScrollView(.vertical) {
                     VStack(spacing: 12) {
                         ForEach(shelves) { shelf in
                             NavigationLink {
-                                ShelfDetailView(shelf: shelf)
+                                ShelfDetailView(shelf: shelf) {
+                                    Task {
+                                        await fetchUserShelves()
+                                    }
+                                }
                             } label: {
                                 ShelfCell(shelf: shelf)
                             }
                         }
+
+                        Button("Ajouter une étagère", systemImage: "plus") {
+                            isCreatingShelf.toggle()
+                        }
+                        .padding(.vertical, 16)
                     }
                 }
-                
+
             }
             .navigationTitle("Ma bibliothèque")
             .toolbarTitleDisplayMode(.inlineLarge)
+            .sheet(isPresented: $isCreatingShelf) {
+                CreateShelfView {
+                    isCreatingShelf.toggle()
+                    Task {
+                        await fetchUserShelves()
+                    }
+                }
+                .presentationDetents([.height(200)])
+                .presentationDragIndicator(.visible)
+            }
         }
         .task {
             await fetchUserShelves()
         }
     }
-    
+
     private func fetchUserShelves() async {
         do {
             let fetchedShelves = try await UserService.shared.getMyShelves()
-            
+
             shelves = fetchedShelves
         } catch {
             print("❌ Erreur UserService : \(error.localizedDescription)")

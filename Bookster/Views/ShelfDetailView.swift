@@ -11,15 +11,21 @@ import DebouncedOnChange
 struct ShelfDetailView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(SessionManager.self) var session
+    @Environment(\.dismiss) var dismiss
+
+    @State private var showDeleteConfirmation = false
 
     @State private var shelf: Shelf
     @State private var filteredBooks: [Book] = []
     @State private var isSearchActive = false
     @State private var searchText = ""
+    
+    var onDelete: (() -> Void)? = nil
 
-    init(shelf: Shelf) {
+    init(shelf: Shelf, onDelete: (() -> Void)? = nil) {
         _shelf = State(initialValue: shelf)
         _filteredBooks = State(initialValue: shelf.books ?? [])
+        self.onDelete = onDelete
     }
 
     var body: some View {
@@ -55,6 +61,14 @@ struct ShelfDetailView: View {
                         .foregroundColor(.booksterGreen)
                     }
                 }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showDeleteConfirmation = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                }
             }
             .if(isSearchActive) { view in
                 view.searchable(
@@ -64,8 +78,33 @@ struct ShelfDetailView: View {
                     searchBooks()
                 }
             }
+            .alert("Supprimer cette étagère ?", isPresented: $showDeleteConfirmation) {
+                Button("Supprimer", role: .destructive) {
+                    Task {
+                        await deleteShelf()
+                    }
+                }
+                Button("Annuler", role: .cancel) {
+                    showDeleteConfirmation = false
+                }
+            } message: {
+                Text("Cette action est irréversible.")
+            }
             .toolbar(.hidden, for: .tabBar)
         }
+    }
+    
+    private func deleteShelf() async {
+        //TODO: Loading
+        do {
+            try await ShelfService.shared.deleteShelf(id: shelf.id)
+        } catch {
+            print(error)
+        }
+        
+        onDelete?()
+
+        dismiss()
     }
     
     private func searchBooks() {
@@ -110,11 +149,6 @@ struct ShelfDetailView: View {
         )
     )
 
-    HomeView(books: Book.mocks(count: 10))
+    ShelfDetailView(shelf: Shelf.mock)
     .environment(mockSession)
-}
-
-#Preview("Logged Out") {
-    HomeView()
-        .environment(SessionManager.shared)
 }
