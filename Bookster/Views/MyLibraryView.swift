@@ -30,11 +30,18 @@ struct MyLibraryView: View {
                     VStack(spacing: 12) {
                         ForEach(shelves) { shelf in
                             NavigationLink {
-                                ShelfDetailView(shelf: shelf) {
+                                ShelfDetailView(
+                                    shelf: shelf
+                                ) {
+                                    Task {
+                                        await fetchUserShelves()
+                                    }
+                                } fetchShelves: {
                                     Task {
                                         await fetchUserShelves()
                                     }
                                 }
+
                             } label: {
                                 ShelfCell(shelf: shelf)
                             }
@@ -51,7 +58,7 @@ struct MyLibraryView: View {
             .navigationTitle("Ma bibliothèque")
             .toolbarTitleDisplayMode(.inlineLarge)
             .sheet(isPresented: $isCreatingShelf) {
-                CreateShelfView {
+                EditShelfView {
                     isCreatingShelf.toggle()
                     Task {
                         await fetchUserShelves()

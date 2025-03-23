@@ -1,5 +1,5 @@
 //
-//  CreateShelfView.swift
+//  EditShelfView.swift
 //  Bookster
 //
 //  Created by Alexis Gadbin on 22/03/2025.
@@ -8,17 +8,36 @@
 import EmojiPicker
 import SwiftUI
 
-struct CreateShelfView: View {
+struct EditShelfView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var name: String = ""
     @State private var emoji: Emoji? = Emoji(value: "📚", name: "Books")
     @State private var color: Color = .booksterGreen
-    @State var onCreate: () -> Void
+    @State var onEdit: () -> Void
+    var shelfId: Int?
     
     let presetColors: [Color] = [
         .booksterGreen, .blue, .orange, .pink, .purple, .red,
     ]
+    
+    init(onEdit: @escaping () -> Void) {
+        self.onEdit = onEdit
+    }
+    
+    init(
+        name: String,
+        emoji: Emoji,
+        color: Color,
+        shelfId: Int,
+        onEdit: @escaping () -> Void
+    ) {
+        self.name = name
+        self.emoji = emoji
+        self.color = color
+        self.shelfId = shelfId
+        self.onEdit = onEdit
+    }
     
     @State
     var displayEmojiPicker: Bool = false
@@ -98,10 +117,10 @@ struct CreateShelfView: View {
             
             Button(action: {
                 Task {
-                    await createShelf()
+                    await editShelf()
                 }
             }) {
-                Text("Créer l'étagère")
+                Text(shelfId == nil ? "Créer l'étagère" : "Modifier l'étagère")
                     .foregroundColor(.white)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -133,7 +152,7 @@ struct CreateShelfView: View {
         }
     }
     
-    private func createShelf() async {
+    private func editShelf() async {
         guard !name.isEmpty else {
             return
         }
@@ -152,18 +171,28 @@ struct CreateShelfView: View {
                 emoji: emoji.value,
                 color: color
             )
-            let response = try await ShelfService.shared.createShelf(
-                editShelfRequest: editShelfRequest)
             
-            onCreate()
+            if let shelfId = shelfId
+            {
+                let response = try await ShelfService.shared.updateShelf(
+                    id: shelfId,
+                    editShelfRequest: editShelfRequest
+                )
+            } else {
+                let response = try await ShelfService.shared.createShelf(
+                    editShelfRequest: editShelfRequest
+                )
+            }
+            
+            onEdit()
         } catch {
-            print("Error creating shelf: \(error)")
+            print("Error editing shelf: \(error)")
         }
     }
 }
 
 #Preview {
-    CreateShelfView {
+    EditShelfView {
         print("Create shelf")
     }
 }
