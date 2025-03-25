@@ -28,6 +28,12 @@ struct AddBookView: View {
     
     @State private var isSaving = false
     
+    var onAdd: (() -> Void)?
+    
+    init(onAdd: (() -> Void)? = nil) {
+        self.onAdd = onAdd
+    }
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -182,6 +188,8 @@ struct AddBookView: View {
                 parameters: parameters,
                 images: images
             )
+            
+            onAdd?()
             
             dismiss()
             

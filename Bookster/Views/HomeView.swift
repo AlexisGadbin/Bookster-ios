@@ -11,22 +11,32 @@ import DebouncedOnChange
 struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(SessionManager.self) var session
-
+    
     @State private var books: [Book] = []
     @State private var isSearchActive = false
     @State private var searchText = ""
-
+    
     init(books: [Book] = []) {
         _books = State(initialValue: books)
     }
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 colorScheme == .dark
-                    ? Color.booksterBlack.ignoresSafeArea()
-                    : Color.booksterWhite.ignoresSafeArea()
-
+                ? Color.booksterBlack.ignoresSafeArea()
+                : Color.booksterWhite.ignoresSafeArea()
+                
+                if books.isEmpty {
+                    VStack(alignment: .center, spacing: 12) {
+                        Text("Vous n'avez pas encore de livre enregistré.")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.horizontal, 32)
+                }
+                
                 
                 ScrollView(.vertical) {
                     VStack(spacing: 12) {
@@ -52,10 +62,14 @@ struct HomeView: View {
                         .foregroundColor(.booksterGreen)
                     }
                 }
-
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        AddBookView()
+                        AddBookView {
+                            Task {
+                                await fetchBooks()
+                            }
+                        }
                     } label: {
                         Image(systemName: "plus")
                             .foregroundColor(.booksterGreen)
@@ -81,7 +95,7 @@ struct HomeView: View {
             await fetchBooks()
         }
     }
-
+    
     private func fetchBooks(search: String = "") async {
         do {
             let fetchedBooks = try await UserService.shared.getMyBooks(search: search)
