@@ -52,6 +52,8 @@ struct UpdateProfileView: View {
                     .padding(.bottom, 20)
 
                     Spacer()
+                    
+                    ConstructionBanner()
                 }
                 .navigationTitle("Modifier le profil")
                 .navigationBarTitleDisplayMode(.inline)

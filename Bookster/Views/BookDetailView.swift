@@ -10,7 +10,7 @@ import SwiftUI
 struct BookDetailView: View {
     let book: Book
     var onDelete: (() -> Void)? = nil
-    
+
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
 
@@ -65,7 +65,7 @@ struct BookDetailView: View {
 
                 VStack {
                     if let shelves = book.shelves {
-                        Text("Catégories :")
+                        Text("Etagères :")
                             .font(.body)
 
                         ForEach(shelves) { shelf in
@@ -73,6 +73,10 @@ struct BookDetailView: View {
                         }
                     }
                 }
+                
+                Spacer()
+
+                ConstructionBanner()
             }
         }
         .alert("Supprimer ce livre ?", isPresented: $showDeleteConfirmation) {
@@ -125,15 +129,18 @@ struct BookDetailView: View {
             print(error)
         }
         isDeleting = false
-        
+
         onDelete?()
 
         dismiss()
     }
 }
 
-#Preview {
-    NavigationStack {
-        BookDetailView(book: Book.mock)
+#if DEBUG
+    #Preview {
+        NavigationStack {
+            BookDetailView(book: Book.mock)
+                .environment(SessionManager.preview)
+        }
     }
-}
+#endif
