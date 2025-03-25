@@ -112,26 +112,14 @@ struct HomeView: View {
     }
 }
 
+#if DEBUG
 #Preview("Logged In") {
-    let mockSession = SessionManager(
-        token: "token",
-        user: User(
-            id: 1,
-            firstName: "Alexis",
-            lastName: "Gadbin",
-            email: "alexis@gadbin.com",
-            avatarUrl: nil,
-            shelves: Shelf.mocks(
-                count: 4
-            )
-        )
-    )
-
     HomeView(books: Book.mocks(count: 10))
-    .environment(mockSession)
+        .environment(SessionManager.preview)
 }
 
 #Preview("Logged Out") {
     HomeView()
         .environment(SessionManager.shared)
 }
+#endif

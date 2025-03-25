@@ -20,7 +20,7 @@ class AuthService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let body = AuthRequest(email: email, password: password)
+        let body = LoginRequest(email: email, password: password)
         request.httpBody = try JSONEncoder().encode(body)
 
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -33,6 +33,42 @@ class AuthService {
 
         return loginResponse
     }
+    
+    func register(
+        email: String,
+        password: String,
+        passwordConfirmation: String,
+        firstName: String,
+        lastName: String
+    ) async throws -> AuthResponse {
+        guard let url = URL(string: Constants.apiBaseURL + "/auth/register") else {
+            throw URLError(.badURL)
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = RegisterRequest(
+            email: email,
+            password: password,
+            passwordConfirmation: passwordConfirmation,
+            firstName: firstName,
+            lastName: lastName
+        )
+        request.httpBody = try JSONEncoder().encode(body)
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 else {
+            throw URLError(.badServerResponse)
+        }
+
+        let registerResponse = try JSONDecoder().decode(AuthResponse.self, from: data)
+
+        return registerResponse
+    }
+        
     
     func getMe(token: String) async throws -> User {
         guard let url = URL(string: Constants.apiBaseURL + "/auth/me") else {

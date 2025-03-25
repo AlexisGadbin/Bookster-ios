@@ -61,6 +61,41 @@ final class SessionManager {
             logout()
         }
     }
+    
+    @MainActor
+    func register(
+        email: String,
+        password: String,
+        passwordConfirmation: String,
+        firstName: String,
+        lastName: String
+    ) async {
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            let authResponse = try await AuthService.shared.register(
+                email: email,
+                password: password,
+                passwordConfirmation: passwordConfirmation,
+                firstName: firstName,
+                lastName: lastName
+            )
+            let token = authResponse.token.token
+
+            self.token = token
+            let isSaved = KeychainService.shared.save(token: token)
+
+            if isSaved {
+                await fetchCurrentUser()
+            } else {
+                print("Erreur lors de la sauvegarde du token dans le keychain")
+            }
+        } catch {
+            print("❌ Register failed: \(error)")
+            logout()
+        }
+    }
 
     func logout() {
         guard let token else { return }
@@ -92,5 +127,10 @@ final class SessionManager {
                 "⚠️ Erreur lors de la récupération de l'utilisateur : \(error)")
         }
     }
-
 }
+
+#if DEBUG
+extension SessionManager {
+    static let preview = SessionManager(user: User.mock)
+}
+#endif

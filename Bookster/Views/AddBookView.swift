@@ -197,7 +197,9 @@ struct AddBookView: View {
 
 
 
+#if DEBUG
 #Preview {
     AddBookView()
-        .environment(SessionManager(token: "token", user: User.mock))
+        .environment(SessionManager.preview)
 }
+#endif

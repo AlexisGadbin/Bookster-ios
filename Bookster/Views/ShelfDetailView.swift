@@ -176,25 +176,15 @@ struct ShelfDetailView: View {
     }
 }
 
+#if DEBUG
 #Preview("Logged In") {
-    let mockSession = SessionManager(
-        token: "token",
-        user: User(
-            id: 1,
-            firstName: "Alexis",
-            lastName: "Gadbin",
-            email: "alexis@gadbin.com",
-            avatarUrl: nil,
-            shelves: Shelf.mocks(
-                count: 4
-            )
-        )
-    )
 
     ShelfDetailView(
         shelf: Shelf.mock,
         onDelete: {},
         fetchShelves: {}
     )
-    .environment(mockSession)
+    .environment(SessionManager.preview)
 }
+
+#endif

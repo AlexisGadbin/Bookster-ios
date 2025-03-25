@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AuthView: View {
     @Environment(\.colorScheme) var colorScheme
+    
+    @State private var isRegistering = false
 
     var body: some View {
         ZStack {
@@ -27,13 +29,24 @@ struct AuthView: View {
                     .fontDesign(.rounded)
                     .foregroundStyle(.booksterGreen)
                 
-                LoginForm()
+                if !isRegistering {
+                    LoginForm {
+                        isRegistering = true
+                    }
+                } else {
+                    RegisterForm {
+                        isRegistering = false
+                    }
+                }
             }
             .padding(.horizontal, 32)
         }
     }
 }
 
+#if DEBUG
 #Preview {
     AuthView()
+        .environment(SessionManager.preview)
 }
+#endif

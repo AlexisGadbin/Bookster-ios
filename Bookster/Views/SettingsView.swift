@@ -100,7 +100,9 @@ struct SettingsView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     SettingsView()
         .environment(SessionManager(user: User.mock))
 }
+#endif
