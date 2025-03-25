@@ -137,7 +137,7 @@ struct AddBookView: View {
                             Spacer()
                         }
                     }
-                    .disabled(isSaving || title.isEmpty || authorName.isEmpty)
+                    .disabled(isSaving || title.isEmpty || authorName.isEmpty || coverUIImage == nil || backCoverUIImage == nil)
                 }
             }
             .navigationTitle("Ajouter un livre")
