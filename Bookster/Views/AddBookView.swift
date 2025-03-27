@@ -140,6 +140,7 @@ struct AddBookView: View {
                     .disabled(isSaving || title.isEmpty || authorName.isEmpty || coverUIImage == nil || backCoverUIImage == nil)
                 }
             }
+            .toolbar(.hidden, for: .tabBar)
             .navigationTitle("Ajouter un livre")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: coverImage) { newItem in

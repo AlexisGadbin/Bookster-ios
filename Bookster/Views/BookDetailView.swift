@@ -91,6 +91,7 @@ struct BookDetailView: View {
         } message: {
             Text("Cette action est irréversible.")
         }
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {

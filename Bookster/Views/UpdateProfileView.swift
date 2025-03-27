@@ -55,6 +55,7 @@ struct UpdateProfileView: View {
                     
                     ConstructionBanner()
                 }
+                .toolbar(.hidden, for: .tabBar)
                 .navigationTitle("Modifier le profil")
                 .navigationBarTitleDisplayMode(.inline)
             }
