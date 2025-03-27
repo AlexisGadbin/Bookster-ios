@@ -67,15 +67,20 @@ struct ShelfCell: View {
                 Group {
                     if let books = shelf.books {
                         if !books.isEmpty {
-                            HStack(spacing: 16) {
-                                ForEach(books) { book in
-                                    
-                                    ImageLoaderView(
-                                        urlString: book.coverImageUrl!
-                                    )
-                                    .frame(width: 60, height: 100)
+                            GeometryReader { geometry in
+                                HStack(spacing: 16) {
+                                    ForEach(books.prefix(8)) { book in
+                                        ImageLoaderView(
+                                            urlString: book.coverImageUrl!
+                                        )
+                                        .frame(width: 60, height: 100)
+                                    }
+                                    Spacer()
                                 }
+                                .frame(maxWidth: geometry.size.width, alignment: .leading)
+                                .clipped()
                             }
+                            .frame(height: 100)
                         }
                         else {
                             Text("Tu n'as pas encore commencé à remplir cette étagère !")

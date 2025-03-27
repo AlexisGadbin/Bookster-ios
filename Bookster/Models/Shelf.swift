@@ -17,7 +17,7 @@ struct Shelf: Identifiable, Codable {
     let user: User?
 
     static var mock: Shelf {
-        Shelf(id: 1, name: "Favourites", emoji: "❤️", color: "#FF0000", userId: 1, books: Book.mocks(count: 3), user: nil)
+        Shelf(id: 1, name: "Favourites", emoji: "❤️", color: "#FF0000", userId: 1, books: Book.mocks(count: 8), user: nil)
     }
     
     static func mocks(count: Int) -> [Shelf] {
