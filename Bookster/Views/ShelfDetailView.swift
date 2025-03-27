@@ -138,6 +138,7 @@ struct ShelfDetailView: View {
         //TODO: Loading
         do {
             try await ShelfService.shared.deleteShelf(id: shelf.id)
+            await SessionManager.shared.fetchCurrentUser()
         } catch {
             print(error)
         }

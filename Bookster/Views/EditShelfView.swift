@@ -184,6 +184,7 @@ struct EditShelfView: View {
                 )
             }
             
+            await SessionManager.shared.fetchCurrentUser()
             onEdit()
         } catch {
             print("Error editing shelf: \(error)")

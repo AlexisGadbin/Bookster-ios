@@ -16,6 +16,7 @@ struct ShelfPickerView: View {
             ForEach(shelves) { shelf in
                 MultipleSelectionRow(
                     title: shelf.name,
+                    emoji: shelf.emoji,
                     isSelected: selectedShelves.contains(where: {
                         $0.id == shelf.id
                     })
@@ -36,12 +37,15 @@ struct ShelfPickerView: View {
         @Environment(\.colorScheme) var colorScheme
         
         var title: String
+        var emoji: String
         var isSelected: Bool
         var action: () -> Void
 
         var body: some View {
             Button(action: action) {
                 HStack {
+                    Text(emoji)
+                        .font(.title)
                     Text(title)
                         .foregroundStyle(
                             colorScheme == .dark
