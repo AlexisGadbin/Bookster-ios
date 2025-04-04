@@ -50,7 +50,7 @@ final class NetworkManager {
 
         switch httpResponse.statusCode {
         case 200..<300:
-            print("✅ Réponse OK (vide)")
+            break
         case 401:
             SessionManager.shared.logout()
             throw URLError(.userAuthenticationRequired)
@@ -65,10 +65,11 @@ final class NetworkManager {
         endpoint: String,
         method: String = "GET",
         body: Encodable? = nil,
-        requiresAuth: Bool = true
+        requiresAuth: Bool = true,
+        baseURL: String = Constants.apiBaseURL
     ) async throws -> T {
         
-        guard let url = URL(string: Constants.apiBaseURL + endpoint) else {
+        guard let url = URL(string: baseURL + endpoint) else {
             throw URLError(.badURL)
         }
         
@@ -95,12 +96,15 @@ final class NetworkManager {
             throw URLError(.badServerResponse)
         }
         
+        
         switch httpResponse.statusCode {
         case 200..<300:
-            print("Réponse OK")
             break
         case 401:
             SessionManager.shared.logout()
+            throw URLError(.userAuthenticationRequired)
+        case 403:
+            print("403 Forbidden")
             throw URLError(.userAuthenticationRequired)
         default:
             print(response.description)
@@ -147,8 +151,6 @@ final class NetworkManager {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }
-
-        print("Status code : \(httpResponse.statusCode)")
 
         guard (200..<300).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)

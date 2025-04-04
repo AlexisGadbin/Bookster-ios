@@ -28,6 +28,11 @@ struct AddBookView: View {
     
     @State private var isSaving = false
     
+    @State private var isbnCode: String?
+    
+    @State private var isShowingScanner = false
+    @State private var isFetchingOpenLibrary = false
+    
     var onAdd: (() -> Void)?
     
     init(onAdd: (() -> Void)? = nil) {
@@ -36,118 +41,197 @@ struct AddBookView: View {
     
     var body: some View {
         NavigationStack {
-            Form {
-                Section(header: Text("Informations du livre")) {
-                    TextField("Titre", text: $title)
-                    TextField("Auteur", text: $authorName)
-                    TextField(
-                        "Description", text: $description, axis: .vertical
-                    )
-                    .lineLimit(3...6)
-                }
-                
-                Section(header: Text("Couvertures")) {
-                    PhotosPicker(selection: $coverImage, matching: .images) {
-                        HStack {
-                            Text("Image de couverture")
-                            Spacer()
-                            if let image = coverUIImage {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 60, height: 90)
-                                    .clipped()
-                                    .cornerRadius(6)
-                            } else {
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(.booksterLightGray)
+            ZStack {
+                Form {
+                    Section(header: Text("Informations du livre")) {
+                        TextField("Titre", text: $title)
+                        TextField("Auteur", text: $authorName)
+                        TextField(
+                            "Description", text: $description, axis: .vertical
+                        )
+                        .lineLimit(3...6)
+                    }
+                    
+                    Section(header: Text("Couvertures")) {
+                        PhotosPicker(selection: $coverImage, matching: .images) {
+                            HStack {
+                                Text("Image de couverture")
+                                Spacer()
+                                if let image = coverUIImage {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 60, height: 90)
+                                        .clipped()
+                                        .cornerRadius(6)
+                                } else {
+                                    Image(systemName: "photo")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundColor(.booksterLightGray)
+                                }
+                            }
+                        }
+                        
+                        PhotosPicker(selection: $backCoverImage, matching: .images)
+                        {
+                            HStack {
+                                Text("4ème de couverture")
+                                Spacer()
+                                if let image = backCoverUIImage {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 60, height: 90)
+                                        .clipped()
+                                        .cornerRadius(6)
+                                } else {
+                                    Image(systemName: "photo.on.rectangle")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundColor(.booksterLightGray)
+                                }
                             }
                         }
                     }
                     
-                    PhotosPicker(selection: $backCoverImage, matching: .images)
-                    {
+                    Section(header: Text("Note")) {
                         HStack {
-                            Text("4ème de couverture")
-                            Spacer()
-                            if let image = backCoverUIImage {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 60, height: 90)
-                                    .clipped()
-                                    .cornerRadius(6)
-                            } else {
-                                Image(systemName: "photo.on.rectangle")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(.booksterLightGray)
+                            Slider(
+                                value: $note,
+                                in: 0...10,
+                                step: 0.5
+                            )
+                            .foregroundStyle(.booksterGreen)
+                            
+                                Text("\(note, specifier: "%.1f")")
+                                    .foregroundStyle(.secondary)
+                            
+                        }
+                    }
+                    
+                    Section(header: Text("Étagère")) {
+                        NavigationLink {
+                            ShelfPickerView(
+                                selectedShelves: $selectedShelves,
+                                shelves: session.currentUser?.shelves ?? []
+                            )
+                        } label: {
+                            HStack {
+                                Text("Sélectionner une étagère")
+                                Spacer()
+                                Text("\(selectedShelves.count) étagères")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    
+                    Section {
+                        Button {
+                            Task {
+                                await saveBook()
+                            }
+                        } label: {
+                            HStack {
+                                Spacer()
+                                if isSaving {
+                                    ProgressView()
+                                } else {
+                                    Text("Enregistrer le livre")
+                                        .bold()
+                                }
+                                Spacer()
+                            }
+                        }
+                        .disabled(isSaving || title.isEmpty || authorName.isEmpty || coverUIImage == nil || backCoverUIImage == nil)
+                    }
+                }
+                .toolbar(.hidden, for: .tabBar)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isShowingScanner = true
+                        } label: {
+                            Image(systemName: "barcode.viewfinder")
+                        }
+                        .sheet(isPresented: $isShowingScanner) {
+                            ScanBarcodeView { isbnCode in
+                                self.isbnCode = isbnCode
+                                fetchBookByIsbn()
+                                isShowingScanner = false
                             }
                         }
                     }
                 }
-                
-                Section(header: Text("Note")) {
-                    HStack {
-                        Slider(
-                            value: $note,
-                            in: 0...10,
-                            step: 0.5
-                        )
-                        .foregroundStyle(.booksterGreen)
-                        
-                            Text("\(note, specifier: "%.1f")")
-                                .foregroundStyle(.secondary)
-                        
-                    }
+                .disabled(isFetchingOpenLibrary)
+                .navigationBarBackButtonHidden(isFetchingOpenLibrary)
+                .navigationTitle("Ajouter un livre")
+                .navigationBarTitleDisplayMode(.inline)
+                .onChange(of: coverImage) { newItem in
+                    loadImage(from: newItem, into: $coverUIImage)
+                }
+                .onChange(of: backCoverImage) { newItem in
+                    loadImage(from: newItem, into: $backCoverUIImage)
                 }
                 
-                Section(header: Text("Étagère")) {
-                    NavigationLink {
-                        ShelfPickerView(
-                            selectedShelves: $selectedShelves,
-                            shelves: session.currentUser?.shelves ?? []
+                if isFetchingOpenLibrary {
+                    Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .overlay(
+                            ProgressView("Powered by OpenLibrary...")
+                                .progressViewStyle(.circular)
+                                .padding(20)
+                                
                         )
-                    } label: {
-                        HStack {
-                            Text("Sélectionner une étagère")
-                            Spacer()
-                            Text("\(selectedShelves.count) étagères")
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-                
-                Section {
-                    Button {
-                        Task {
-                            await saveBook()
-                        }
-                    } label: {
-                        HStack {
-                            Spacer()
-                            if isSaving {
-                                ProgressView()
-                            } else {
-                                Text("Enregistrer le livre")
-                                    .bold()
-                            }
-                            Spacer()
-                        }
-                    }
-                    .disabled(isSaving || title.isEmpty || authorName.isEmpty || coverUIImage == nil || backCoverUIImage == nil)
                 }
             }
-            .toolbar(.hidden, for: .tabBar)
-            .navigationTitle("Ajouter un livre")
-            .navigationBarTitleDisplayMode(.inline)
-            .onChange(of: coverImage) { newItem in
-                loadImage(from: newItem, into: $coverUIImage)
+        }
+        .allowsHitTesting(!isFetchingOpenLibrary)
+    }
+    
+    private func downloadImage(from urlString: String) async -> UIImage? {
+        guard let url = URL(string: urlString) else { return nil }
+        do {
+            let (data, _) = try await
+            URLSession.shared.data(from: url)
+           
+            if(data.count < 100) {
+                print("Image trop petite")
+                return nil
             }
-            .onChange(of: backCoverImage) { newItem in
-                loadImage(from: newItem, into: $backCoverUIImage)
+            
+            return UIImage(data: data)
+        } catch {
+            print("❌ Erreur lors du téléchargement de l'image : \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    private func fetchBookByIsbn() {
+        Task {
+            isFetchingOpenLibrary = true
+            defer { isFetchingOpenLibrary = false }
+            
+            do {
+                guard let isbnCode = isbnCode else { return }
+                
+                let book = try await OpenLibraryService.shared.getBookByIsbn(isbn: isbnCode)
+                title = book.title
+                
+                if let authorKey = book.authors?.first?.key {
+                    let author = try await OpenLibraryService.shared.getAuthorByKey(key: authorKey)
+                    authorName = author.name
+                }
+                
+                let coverImageUrl = "\(Constants.openLibraryApiBaseURL)/b/ISBN/\(isbnCode)-L.jpg"
+                if let coverImage = await downloadImage(from: coverImageUrl) {
+                    coverUIImage = coverImage
+                }
+                
+            } catch {
+                print(
+                    "❌ Erreur lors de la récupération du livre par ISBN : \(error.localizedDescription)"
+                )
             }
         }
     }

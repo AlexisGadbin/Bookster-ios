@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A062F292D975BF1005152E6 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 5A062F282D975BF1005152E6 /* CodeScanner */; };
 		5A655B512D8386F3008E1D6B /* DebouncedOnChange in Frameworks */ = {isa = PBXBuildFile; productRef = 5A655B502D8386F3008E1D6B /* DebouncedOnChange */; };
 		5A8588552D8F450700933647 /* EmojiPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5A8588542D8F450700933647 /* EmojiPicker */; };
 		5AC1B87B2D820C1A000BBEDD /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC1B87A2D820C1A000BBEDD /* SDWebImageSwiftUI */; };
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A062F292D975BF1005152E6 /* CodeScanner in Frameworks */,
 				5A8588552D8F450700933647 /* EmojiPicker in Frameworks */,
 				5AC1B87B2D820C1A000BBEDD /* SDWebImageSwiftUI in Frameworks */,
 				5A655B512D8386F3008E1D6B /* DebouncedOnChange in Frameworks */,
@@ -90,6 +92,7 @@
 				5AC1B87A2D820C1A000BBEDD /* SDWebImageSwiftUI */,
 				5A655B502D8386F3008E1D6B /* DebouncedOnChange */,
 				5A8588542D8F450700933647 /* EmojiPicker */,
+				5A062F282D975BF1005152E6 /* CodeScanner */,
 			);
 			productName = Bookster;
 			productReference = 5AAE12B82D78CA6800E6FBBF /* Bookster.app */;
@@ -124,6 +127,7 @@
 				5AC1B8792D820C1A000BBEDD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				5A655B4F2D8386F3008E1D6B /* XCRemoteSwiftPackageReference "DebouncedOnChange" */,
 				5A8588532D8F450700933647 /* XCRemoteSwiftPackageReference "EmojiPicker" */,
+				5A062F272D975BF1005152E6 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5AAE12B92D78CA6800E6FBBF /* Products */;
@@ -287,6 +291,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookster/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Bookster a besoin d'accéder à la caméra pour importer des livres à partir de leur code barre";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -317,6 +322,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Bookster/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Bookster a besoin d'accéder à la caméra pour importer des livres à partir de leur code barre";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -359,6 +365,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5A062F272D975BF1005152E6 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.2;
+			};
+		};
 		5A655B4F2D8386F3008E1D6B /* XCRemoteSwiftPackageReference "DebouncedOnChange" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Tunous/DebouncedOnChange.git";
@@ -386,6 +400,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5A062F282D975BF1005152E6 /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5A062F272D975BF1005152E6 /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
+		};
 		5A655B502D8386F3008E1D6B /* DebouncedOnChange */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5A655B4F2D8386F3008E1D6B /* XCRemoteSwiftPackageReference "DebouncedOnChange" */;
