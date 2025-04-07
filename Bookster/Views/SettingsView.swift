@@ -20,7 +20,7 @@ struct SettingsView: View {
         }
         
         return AnyView(
-            NavigationView {
+            NavigationStack {
                 List {
                     Section {
                         HStack(spacing: 16) {

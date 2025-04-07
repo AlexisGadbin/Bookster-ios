@@ -73,7 +73,7 @@ struct UpdateProfileView: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         UpdateProfileView()
     }
 }

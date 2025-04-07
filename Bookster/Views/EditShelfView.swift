@@ -131,7 +131,7 @@ struct EditShelfView: View {
         .padding()
         .background(Color(.systemBackground))
         .sheet(isPresented: $displayEmojiPicker) {
-            NavigationView {
+            NavigationStack {
                 EmojiPickerView(
                     selectedEmoji: $emoji,
                     selectedColor: .accentColor
