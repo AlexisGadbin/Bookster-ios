@@ -16,12 +16,12 @@ struct ShelfDetailView: View {
 
     @State private var showDeleteConfirmation = false
 
-    @State private var shelf: Shelf
     @State private var filteredBooks: [Book] = []
     @State private var isSearchActive = false
     @State private var searchText = ""
     @State private var isEditing = false
 
+    var shelf: Shelf
     var onDelete: () -> Void
     var fetchShelves: () -> Void
 
@@ -29,7 +29,7 @@ struct ShelfDetailView: View {
         shelf: Shelf, onDelete: @escaping () -> Void,
         fetchShelves: @escaping () -> Void
     ) {
-        _shelf = State(initialValue: shelf)
+        self.shelf = shelf
         _filteredBooks = State(initialValue: shelf.books ?? [])
         self.onDelete = onDelete
         self.fetchShelves = fetchShelves
