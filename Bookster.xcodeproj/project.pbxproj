@@ -11,6 +11,7 @@
 		5A655B512D8386F3008E1D6B /* DebouncedOnChange in Frameworks */ = {isa = PBXBuildFile; productRef = 5A655B502D8386F3008E1D6B /* DebouncedOnChange */; };
 		5A8588552D8F450700933647 /* EmojiPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5A8588542D8F450700933647 /* EmojiPicker */; };
 		5AC1B87B2D820C1A000BBEDD /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5AC1B87A2D820C1A000BBEDD /* SDWebImageSwiftUI */; };
+		5AD3FD7A2DA71AF6004CFC68 /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = 5AD3FD792DA71AF6004CFC68 /* WrappingHStack */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 				5A8588552D8F450700933647 /* EmojiPicker in Frameworks */,
 				5AC1B87B2D820C1A000BBEDD /* SDWebImageSwiftUI in Frameworks */,
 				5A655B512D8386F3008E1D6B /* DebouncedOnChange in Frameworks */,
+				5AD3FD7A2DA71AF6004CFC68 /* WrappingHStack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +95,7 @@
 				5A655B502D8386F3008E1D6B /* DebouncedOnChange */,
 				5A8588542D8F450700933647 /* EmojiPicker */,
 				5A062F282D975BF1005152E6 /* CodeScanner */,
+				5AD3FD792DA71AF6004CFC68 /* WrappingHStack */,
 			);
 			productName = Bookster;
 			productReference = 5AAE12B82D78CA6800E6FBBF /* Bookster.app */;
@@ -128,6 +131,7 @@
 				5A655B4F2D8386F3008E1D6B /* XCRemoteSwiftPackageReference "DebouncedOnChange" */,
 				5A8588532D8F450700933647 /* XCRemoteSwiftPackageReference "EmojiPicker" */,
 				5A062F272D975BF1005152E6 /* XCRemoteSwiftPackageReference "CodeScanner" */,
+				5AD3FD782DA71AF6004CFC68 /* XCRemoteSwiftPackageReference "WrappingHStack" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5AAE12B92D78CA6800E6FBBF /* Products */;
@@ -397,6 +401,14 @@
 				minimumVersion = 3.1.3;
 			};
 		};
+		5AD3FD782DA71AF6004CFC68 /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dkk/WrappingHStack.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.11;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -419,6 +431,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5AC1B8792D820C1A000BBEDD /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		5AD3FD792DA71AF6004CFC68 /* WrappingHStack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5AD3FD782DA71AF6004CFC68 /* XCRemoteSwiftPackageReference "WrappingHStack" */;
+			productName = WrappingHStack;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
