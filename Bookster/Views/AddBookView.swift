@@ -144,7 +144,7 @@ struct AddBookView: View {
                                 Spacer()
                             }
                         }
-                        .disabled(isSaving || title.isEmpty || authorName.isEmpty || coverUIImage == nil || backCoverUIImage == nil)
+                        .disabled(isSaving || title.isEmpty || authorName.isEmpty || coverUIImage == nil)
                     }
                 }
                 .toolbar(.hidden, for: .tabBar)
