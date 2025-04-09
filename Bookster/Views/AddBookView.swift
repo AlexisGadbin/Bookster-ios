@@ -32,6 +32,7 @@ struct AddBookView: View {
     
     @State private var isShowingScanner = false
     @State private var isFetchingOpenLibrary = false
+    @State private var showBookNotFoundAlert = false
     
     var onAdd: (() -> Void)?
     
@@ -173,6 +174,16 @@ struct AddBookView: View {
                 .onChange(of: backCoverImage) { newItem in
                     loadImage(from: newItem, into: $backCoverUIImage)
                 }
+                .alert(
+                    "Livre non reconnu",
+                    isPresented: $showBookNotFoundAlert,
+                    actions: {
+                        Button("OK", role: .cancel) { }
+                    },
+                    message: {
+                        Text("Désolé, nous n'avons pas pu trouver ton livre !")
+                    }
+                )
                 
                 if isFetchingOpenLibrary {
                     Color.black.opacity(0.4)
@@ -229,9 +240,7 @@ struct AddBookView: View {
                 }
                 
             } catch {
-                print(
-                    "❌ Erreur lors de la récupération du livre par ISBN : \(error.localizedDescription)"
-                )
+                showBookNotFoundAlert = true
             }
         }
     }
