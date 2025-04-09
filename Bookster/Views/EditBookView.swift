@@ -8,7 +8,7 @@
 import PhotosUI
 import SwiftUI
 
-struct AddBookView: View {
+struct EditBookView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(SessionManager.self) var session
     
@@ -35,8 +35,31 @@ struct AddBookView: View {
     @State private var showBookNotFoundAlert = false
     
     var onAdd: (() -> Void)?
+    var bookId: Int?
     
     init(onAdd: (() -> Void)? = nil) {
+        self.onAdd = onAdd
+    }
+    
+    init(
+        title: String,
+        authorName: String,
+        description: String,
+        note: Float,
+        coverImage: UIImage?,
+        backCoverImage: UIImage?,
+        selectedShelves: [Shelf],
+        bookId: Int? = nil,
+        onAdd: (() -> Void)? = nil
+    ) {
+        self.title = title
+        self.authorName = authorName
+        self.description = description
+        self.note = note
+        self.coverUIImage = coverImage
+        self.backCoverUIImage = backCoverImage
+        self.selectedShelves = selectedShelves
+        self.bookId = bookId
         self.onAdd = onAdd
     }
     
@@ -305,7 +328,7 @@ struct AddBookView: View {
 
 #if DEBUG
 #Preview {
-    AddBookView()
+    EditBookView()
         .environment(SessionManager.preview)
 }
 #endif
