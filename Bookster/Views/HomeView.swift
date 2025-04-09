@@ -65,7 +65,7 @@ struct HomeView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        AddBookView {
+                        EditBookView {
                             Task {
                                 await fetchBooks()
                             }
