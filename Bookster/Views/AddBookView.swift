@@ -203,12 +203,15 @@ struct AddBookView: View {
     private func downloadImage(from urlString: String) async -> UIImage? {
         guard let url = URL(string: urlString) else { return nil }
         do {
-            let (data, _) = try await
+            let (data, response) = try await
             URLSession.shared.data(from: url)
-           
-            if(data.count < 100) {
-                print("Image trop petite")
-                return nil
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw URLError(.badServerResponse)
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                throw URLError(.badServerResponse)
             }
             
             return UIImage(data: data)
@@ -234,7 +237,8 @@ struct AddBookView: View {
                     authorName = author.name
                 }
                 
-                let coverImageUrl = "\(Constants.openLibraryApiBaseURL)/b/ISBN/\(isbnCode)-L.jpg"
+                let coverImageUrl = "\(Constants.openLibraryCoverURL)/b/isbn/\(isbnCode)-L.jpg?default=false"
+                print(coverImageUrl)
                 if let coverImage = await downloadImage(from: coverImageUrl) {
                     coverUIImage = coverImage
                 }
