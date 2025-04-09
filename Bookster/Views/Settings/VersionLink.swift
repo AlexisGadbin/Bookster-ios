@@ -9,6 +9,7 @@ import SwiftUI
 
 struct VersionLink: View {
     @State private var showVersion = false
+    @Environment(\.colorScheme) private var colorScheme
     
     private let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
     private let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
@@ -17,9 +18,13 @@ struct VersionLink: View {
         Button(action: {
             showVersion.toggle()
         }) {
-            Label("Version", systemImage: "info.circle")
+            Label {
+                Text("Version")
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+            } icon: {
+                Image(systemName: "info.circle")
+            }
         }
-        .buttonStyle(.plain)
         .alert(isPresented: $showVersion) {
             Alert(
                 title: Text("Version"),
