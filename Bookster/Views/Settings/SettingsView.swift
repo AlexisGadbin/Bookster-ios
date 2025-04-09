@@ -69,16 +69,15 @@ struct SettingsView: View {
                         NavigationLink(destination: Text("Conditions d'utilisation")) {
                             Label("Conditions d'utilisation", systemImage: "doc.plaintext")
                         }
+                        .disabled(true)
                         
                         NavigationLink(destination: Text("Politique de confidentialité")) {
                             Label("Politique de confidentialité", systemImage: "shield.lefthalf.fill")
                         }
+                        .disabled(true)
                         
-                        NavigationLink(destination: Text("Version 1.0.0")) {
-                            Label("Version", systemImage: "info.circle")
-                        }
+                        VersionLink()
                     }
-                    .disabled(true)
                     
                     Section {
                         Button(role: .destructive) {
