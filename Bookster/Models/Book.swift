@@ -35,7 +35,7 @@ struct Book: Codable, Identifiable {
             contributor: User.mock,
             coverImageUrl: Constants.randomImage,
             backCoverImageUrl: Constants.randomImage,
-            note: nil,
+            note: 8.5,
             shelves: Shelf.mocks(count: 4)
         )
     }

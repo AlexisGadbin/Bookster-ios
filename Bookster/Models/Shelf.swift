@@ -22,7 +22,7 @@ struct Shelf: Identifiable, Codable {
     
     static func mocks(count: Int) -> [Shelf] {
         return (0..<count).map { index in
-            Shelf(id: index, name: "Shelf \(index)", emoji: "📚", color: "#000000", userId: 1, books: nil, user: nil)
+            Shelf(id: index, name: "Shelf \(index)", emoji: "📚", color: "#FF8371", userId: 1, books: nil, user: nil)
         }
     }
 }

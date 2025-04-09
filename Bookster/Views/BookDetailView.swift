@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WrappingHStack
 
 struct BookDetailView: View {
     let book: Book
@@ -25,10 +26,38 @@ struct BookDetailView: View {
 
             VStack(alignment: .leading, spacing: 16) {
 
-                Text(book.title)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .fontDesign(.rounded)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(book.title)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .fontDesign(.rounded)
+                    
+                    HStack {
+                        Text(book.author?.name ?? "Inconnu")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                            .fontDesign(.rounded)
+                        
+                        Spacer()
+                        
+                        if let note = book.note {
+                            let formattedNote = note.truncatingRemainder(dividingBy: 1) == 0
+                                ? String(format: "%.0f", note)
+                                : String(format: "%.1f", note)
+                            Text("\(formattedNote)/10")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .fontDesign(.rounded)
+                        } else {
+                            Text("Pas de note")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .fontDesign(.rounded)
+                        }
+                            
+                    }
+                }
+                
 
                 HStack(alignment: .center, spacing: 32) {
                     if let coverImageUrl = book.coverImageUrl {
@@ -42,42 +71,28 @@ struct BookDetailView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-
-                if let description = book.description {
-                    Text(description)
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Pas de description renseignée")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                }
-
-                HStack {
-                    Text("Auteur :")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                    Text(book.author?.name ?? "Inconnu")
-                        .font(.body)
-                        .fontWeight(.bold)
-                        .fontDesign(.rounded)
-                }
-
-                VStack {
-                    if let shelves = book.shelves {
-                        Text("Etagères :")
-                            .font(.body)
-
-                        ForEach(shelves) { shelf in
-                            Text(shelf.name)
-                        }
+                
+                if let shelves = book.shelves {
+                    WrappingHStack(shelves) { shelf in
+                        ShelfBadge(
+                            name: shelf.name,
+                            emoji: shelf.emoji,
+                            color: shelf.color
+                        )
+                        .padding(.vertical, 4)
                     }
                 }
                 
-                Spacer()
-
-                ConstructionBanner()
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Notes de l'utilisateur")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    
+                    Text(book.description ?? "Pas de notes renseignées")
+                        .font(.body)
+                }
             }
+            .padding(.horizontal, 16)
         }
         .alert("Supprimer ce livre ?", isPresented: $showDeleteConfirmation) {
             Button("Supprimer", role: .destructive) {
