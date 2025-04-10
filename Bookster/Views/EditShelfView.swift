@@ -77,7 +77,6 @@ struct EditShelfView: View {
                         )
                         .onTapGesture {
                             color = preset
-                            print(color)
                         }
                 }
                 

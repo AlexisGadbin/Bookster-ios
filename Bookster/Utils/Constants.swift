@@ -8,8 +8,8 @@
 import Foundation
 
 struct Constants {
-    static var apiBaseURL = "http://localhost:3333/api"
-//    static var apiBaseURL = "https://bookster.alaikssi.com/api"
+//    static var apiBaseURL = "http://localhost:3333/api"
+    static var apiBaseURL = "https://bookster.alaikssi.com/api"
     static var openLibraryApiBaseURL = "https://openlibrary.org"
     static var openLibraryCoverURL = "https://covers.openlibrary.org"
     

@@ -113,6 +113,12 @@ struct HomeView: View {
                     searchText = ""
                     await fetchBooks()
                 }
+            }, refreshBooks: {
+                Task {
+                    isSearchActive = false
+                    searchText = ""
+                    await fetchBooks()
+                }
             })
         } label: {
             ImageTitleCell(

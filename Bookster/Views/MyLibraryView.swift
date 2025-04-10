@@ -78,6 +78,7 @@ struct MyLibraryView: View {
             let fetchedShelves = try await UserService.shared.getMyShelves()
 
             shelves = fetchedShelves
+            print("done")
         } catch {
             print("❌ Erreur UserService : \(error.localizedDescription)")
         }

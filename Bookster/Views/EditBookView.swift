@@ -34,11 +34,14 @@ struct EditBookView: View {
     @State private var isFetchingOpenLibrary = false
     @State private var showBookNotFoundAlert = false
     
-    var onAdd: (() -> Void)?
+    private var coverImageUrl: String?
+    private var backCoverImageUrl: String?
+    
+    var onEdit: () -> Void
     var bookId: Int?
     
-    init(onAdd: (() -> Void)? = nil) {
-        self.onAdd = onAdd
+    init(onAdd: @escaping () -> Void) {
+        self.onEdit = onAdd
     }
     
     init(
@@ -46,21 +49,21 @@ struct EditBookView: View {
         authorName: String,
         description: String,
         note: Float,
-        coverImage: UIImage?,
-        backCoverImage: UIImage?,
+        coverImageUrl: String?,
+        backCoverImageUrl: String?,
         selectedShelves: [Shelf],
-        bookId: Int? = nil,
-        onAdd: (() -> Void)? = nil
+        bookId: Int,
+        onEdit: @escaping () -> Void
     ) {
         self.title = title
         self.authorName = authorName
         self.description = description
         self.note = note
-        self.coverUIImage = coverImage
-        self.backCoverUIImage = backCoverImage
+        self.coverImageUrl = coverImageUrl
+        self.backCoverImageUrl = backCoverImageUrl
         self.selectedShelves = selectedShelves
         self.bookId = bookId
-        self.onAdd = onAdd
+        self.onEdit = onEdit
     }
     
     var body: some View {
@@ -153,7 +156,7 @@ struct EditBookView: View {
                     Section {
                         Button {
                             Task {
-                                await saveBook()
+                                await editBook()
                             }
                         } label: {
                             HStack {
@@ -221,6 +224,15 @@ struct EditBookView: View {
             }
         }
         .allowsHitTesting(!isFetchingOpenLibrary)
+        .task {
+            if let coverImageUrl = coverImageUrl {
+                coverUIImage = await downloadImage(from: coverImageUrl)
+            }
+            
+            if let backCoverImageUrl = backCoverImageUrl {
+                backCoverUIImage = await downloadImage(from: backCoverImageUrl)
+            }
+        }
     }
     
     private func downloadImage(from urlString: String) async -> UIImage? {
@@ -261,7 +273,7 @@ struct EditBookView: View {
                 }
                 
                 let coverImageUrl = "\(Constants.openLibraryCoverURL)/b/isbn/\(isbnCode)-L.jpg?default=false"
-                print(coverImageUrl)
+                
                 if let coverImage = await downloadImage(from: coverImageUrl) {
                     coverUIImage = coverImage
                 }
@@ -285,7 +297,7 @@ struct EditBookView: View {
         }
     }
     
-    private func saveBook() async {
+    private func editBook() async {
         isSaving = true
         
         do {
@@ -304,13 +316,24 @@ struct EditBookView: View {
                 "backCoverImage": backCoverUIImage
             ]
             
-            let response: Book = try await NetworkManager.shared.uploadMultipart(
-                endpoint: "/books",
-                parameters: parameters,
-                images: images
-            )
+            let response: Book
             
-            onAdd?()
+            if let bookId = bookId {
+                response = try await NetworkManager.shared.uploadMultipart(
+                    endpoint: "/books/\(bookId)",
+                    parameters: parameters,
+                    images: images,
+                    httpMethod: "PUT"
+                )
+            } else {
+                response = try await NetworkManager.shared.uploadMultipart(
+                    endpoint: "/books",
+                    parameters: parameters,
+                    images: images
+                )
+            }
+            
+            onEdit()
             
             dismiss()
             
@@ -328,7 +351,7 @@ struct EditBookView: View {
 
 #if DEBUG
 #Preview {
-    EditBookView()
+    EditBookView(onAdd: {})
         .environment(SessionManager.preview)
 }
 #endif

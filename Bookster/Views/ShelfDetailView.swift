@@ -16,7 +16,7 @@ struct ShelfDetailView: View {
 
     @State private var showDeleteConfirmation = false
 
-    @State private var filteredBooks: [Book] = []
+    @State private var books: [Book] = []
     @State private var isSearchActive = false
     @State private var searchText = ""
     @State private var isEditing = false
@@ -27,10 +27,11 @@ struct ShelfDetailView: View {
 
     init(
         shelf: Shelf, onDelete: @escaping () -> Void,
-        fetchShelves: @escaping () -> Void
+        fetchShelves: @escaping () -> Void,
+        books: [Book] = []
     ) {
         self.shelf = shelf
-        _filteredBooks = State(initialValue: shelf.books ?? [])
+        _books = State(initialValue: books)
         self.onDelete = onDelete
         self.fetchShelves = fetchShelves
     }
@@ -46,7 +47,7 @@ struct ShelfDetailView: View {
                     VStack(spacing: 12) {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))])
                         {
-                            ForEach(filteredBooks) { book in
+                            ForEach(books) { book in
                                 bookCell(book: book)
                                     .transition(
                                         .move(edge: .bottom).combined(
@@ -95,9 +96,11 @@ struct ShelfDetailView: View {
                     text: $searchText, isPresented: $isSearchActive,
                     prompt: "Rechercher un livre"
                 )
-                .onChange(of: searchText, debounceTime: .seconds(0.5)) {
+                .onChange(of: searchText, debounceTime: .seconds(2)) {
                     oldValue, newValue in
-                    searchBooks()
+                    Task {
+                        await fetchBooks(search: newValue)
+                    }
                 }
             }
             .alert(
@@ -126,11 +129,29 @@ struct ShelfDetailView: View {
                     shelfId: shelf.id
                 ) {
                     isEditing.toggle()
-                    fetchShelves()
+                    Task {
+                        fetchShelves()
+                    }
                 }
                 .presentationDetents([.height(200)])
                 .presentationDragIndicator(.visible)
             }
+            .task {
+                await fetchBooks()
+            }
+            .refreshable {
+                searchText = ""
+                await fetchBooks()
+            }
+        }
+    }
+    
+    private func fetchBooks(search: String = "") async {
+        do {
+            let fetchedBooks = try await BookService.shared.searchBooksFromShelf(search: search, shelfId: shelf.id)
+            books = fetchedBooks.data
+        } catch {
+            print("❌ Erreur BookService : \(error.localizedDescription)")
         }
     }
 
@@ -148,23 +169,23 @@ struct ShelfDetailView: View {
         dismiss()
     }
 
-    private func searchBooks() {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            if searchText.isEmpty {
-                filteredBooks = shelf.books ?? []
-            } else {
-                filteredBooks =
-                    shelf.books?.filter { book in
-                        book.title.lowercased().contains(
-                            searchText.lowercased())
-                    } ?? []
-            }
-        }
-    }
-
     private func bookCell(book: Book) -> some View {
         NavigationLink {
-            BookDetailView(book: book)
+            BookDetailView(book: book) {
+                Task {
+                    isSearchActive = false
+                    searchText = ""
+                    await fetchBooks()
+                    fetchShelves()
+                }
+            } refreshBooks: {
+                Task {
+                    isSearchActive = false
+                    searchText = ""
+                    await fetchBooks()
+                    fetchShelves()
+                }
+            }
         } label: {
             ImageTitleCell(
                 imageWidth: 100,

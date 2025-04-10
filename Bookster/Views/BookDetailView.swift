@@ -11,6 +11,7 @@ import WrappingHStack
 struct BookDetailView: View {
     let book: Book
     var onDelete: (() -> Void)? = nil
+    var refreshBooks: () -> Void
 
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
@@ -31,17 +32,18 @@ struct BookDetailView: View {
                         .font(.title3)
                         .fontWeight(.bold)
                         .fontDesign(.rounded)
-                    
+
                     HStack {
                         Text(book.author?.name ?? "Inconnu")
                             .font(.body)
                             .fontWeight(.semibold)
                             .fontDesign(.rounded)
-                        
+
                         Spacer()
-                        
+
                         if let note = book.note {
-                            let formattedNote = note.truncatingRemainder(dividingBy: 1) == 0
+                            let formattedNote =
+                                note.truncatingRemainder(dividingBy: 1) == 0
                                 ? String(format: "%.0f", note)
                                 : String(format: "%.1f", note)
                             Text("\(formattedNote)/10")
@@ -54,10 +56,9 @@ struct BookDetailView: View {
                                 .fontWeight(.semibold)
                                 .fontDesign(.rounded)
                         }
-                            
+
                     }
                 }
-                
 
                 HStack(alignment: .center, spacing: 32) {
                     if let coverImageUrl = book.coverImageUrl {
@@ -71,7 +72,7 @@ struct BookDetailView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                
+
                 if let shelves = book.shelves {
                     WrappingHStack(shelves) { shelf in
                         ShelfBadge(
@@ -82,12 +83,12 @@ struct BookDetailView: View {
                         .padding(.vertical, 4)
                     }
                 }
-                
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Notes de l'utilisateur")
                         .font(.title3)
                         .fontWeight(.bold)
-                    
+
                     Text(book.description ?? "Pas de notes renseignées")
                         .font(.body)
                 }
@@ -109,12 +110,22 @@ struct BookDetailView: View {
         .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    // Edit
+                NavigationLink {
+                    EditBookView(
+                        title: book.title,
+                        authorName: book.author?.name ?? "",
+                        description: book.description ?? "",
+                        note: Float(book.note ?? 5.0),
+                        coverImageUrl: book.coverImageUrl,
+                        backCoverImageUrl: book.backCoverImageUrl,
+                        selectedShelves: book.shelves ?? [],
+                        bookId: book.id,
+                        onEdit: {
+                            refreshBooks()
+                        })
                 } label: {
                     Image(systemName: "pencil")
                 }
-                .disabled(true)
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -155,7 +166,7 @@ struct BookDetailView: View {
 #if DEBUG
     #Preview {
         NavigationStack {
-            BookDetailView(book: Book.mock)
+            BookDetailView(book: Book.mock, refreshBooks: {})
                 .environment(SessionManager.preview)
         }
     }
