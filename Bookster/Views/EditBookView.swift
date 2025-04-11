@@ -131,8 +131,13 @@ struct EditBookView: View {
                             )
                             .foregroundStyle(.booksterGreen)
                             
-                                Text("\(note, specifier: "%.1f")")
-                                    .foregroundStyle(.secondary)
+                            let formattedNote =
+                            note.truncatingRemainder(dividingBy: 1) == 0
+                            ? String(format: "%.0f", note)
+                            : String(format: "%.1f", note)
+                            
+                            Text("\(formattedNote)")
+                                .foregroundStyle(.secondary)
                             
                         }
                     }
@@ -218,7 +223,7 @@ struct EditBookView: View {
                             ProgressView("Powered by OpenLibrary...")
                                 .progressViewStyle(.circular)
                                 .padding(20)
-                                
+                            
                         )
                 }
             }
