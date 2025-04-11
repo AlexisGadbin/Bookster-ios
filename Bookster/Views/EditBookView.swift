@@ -152,7 +152,7 @@ struct EditBookView: View {
                             HStack {
                                 Text("Sélectionner une étagère")
                                 Spacer()
-                                Text("\(selectedShelves.count) étagères")
+                                Text("\(selectedShelves.count) étagère\((selectedShelves.count > 1) ? "s" : "")")
                                     .foregroundStyle(.secondary)
                             }
                         }
