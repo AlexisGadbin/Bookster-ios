@@ -24,18 +24,8 @@ struct SettingsView: View {
                 List {
                     Section {
                         HStack(spacing: 16) {
-                            if let avatarUrl = user.avatarUrl {
-                                ImageLoaderView(urlString: avatarUrl)
-                                    .frame(width: 80, height: 80)
-                                    .clipShape(Circle())
-                            } else {
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 80, height: 80)
-                                    .clipShape(Circle())
-                                    .foregroundColor(.gray)
-                            }
+                            AvatarCell(user: user)
+                            
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(user.firstName + " " + user.lastName)
@@ -46,7 +36,6 @@ struct SettingsView: View {
                                     .foregroundColor(.secondary)
                             }
                         }
-                        .padding(.vertical, 8)
                     }
                     
                     Section(header: Text("Paramètres")) {

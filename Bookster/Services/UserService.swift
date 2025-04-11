@@ -29,6 +29,18 @@ struct UserService {
         return response
     }
     
+    func updateProfile(updateProfileRequest: UpdateProfileRequest) async throws -> User {
+        let response: User = try await NetworkManager.shared.request(
+            endpoint: "/me/profile",
+            method: "PUT",
+            body: updateProfileRequest
+        )
+        
+        await SessionManager.shared.fetchCurrentUser()
+        
+        return response
+    }
+    
     func getMyShelves() async throws -> [Shelf] {
         let response: [Shelf] = try await NetworkManager.shared.request(endpoint: "/me/shelves");
         
