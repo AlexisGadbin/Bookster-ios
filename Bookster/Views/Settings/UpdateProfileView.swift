@@ -134,9 +134,11 @@ struct UpdateProfileView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         UpdateProfileView()
             .environment(SessionManager.preview)
     }
 }
+#endif
